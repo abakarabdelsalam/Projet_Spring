@@ -13,6 +13,7 @@ import java.util.Arrays;
 public class BookController {
     @GetMapping(value="/books")
         public ResponseEntity listBooks(){
+
             Book book = new Book();
             book.setTitle("MyBook");
             book.setCategory(new Category("Db"));
