@@ -5,6 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
+import javax.validation.Valid;
 import java.util.Arrays;
 
 @RestController
@@ -19,7 +21,7 @@ public class BookController {
         }
 
     @PostMapping("/books")
-    public ResponseEntity addBook(@RequestBody Book book) {
+    public ResponseEntity addBook(@RequestParam Book book) {
         return new ResponseEntity(book, HttpStatus.CREATED);
     }
 
@@ -28,7 +30,7 @@ public class BookController {
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
     @PutMapping (value="/books/{bookId}")
-    public ResponseEntity updateBook(@PathVariable("bookId")String bookId, @RequestBody  Book book) {
+    public ResponseEntity updateBook(@PathVariable("bookId")String bookId, @RequestParam @Valid Book book) {
         return new ResponseEntity(HttpStatus.OK);
     }
     @GetMapping("/categories")

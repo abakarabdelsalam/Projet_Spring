@@ -1,16 +1,23 @@
 package com.example.demo.User;
 
+import javax.validation.constraints.Size;
+
 public class User {
+
+    public User() {
+
+    }
+
     public User(String email) {
         this.email = email;
     }
 
-
     private String firstName;
     private String lastName;
+    @Size(min=2, max=30, message = "entre 2 et 25")
     private String password;
     private String email;
-
+    @Size(min=2, max=30, message = "entre 2 et 25")
 
 
     public String getEmail() {
