@@ -25,6 +25,13 @@ public class Book {
     @Transient
     private int categoryId;
 
+    private BookStatus bookStatus;
+    private boolean deleted;
+
+    public User getUser() {
+        return user;
+    }
+
     public boolean isDeleted() {
         return deleted;
     }
@@ -33,8 +40,7 @@ public class Book {
         this.deleted = deleted;
     }
 
-    private BookStatus bookStatus;
-    private boolean deleted;
+
 
     public int getId() {
         return id;
@@ -44,9 +50,7 @@ public class Book {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
-    }
+
 
     public void setUser(User user) {
         this.user = user;
