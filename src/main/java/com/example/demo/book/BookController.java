@@ -3,6 +3,8 @@ package com.example.demo.book;
 
 import com.example.demo.User.User;
 import com.example.demo.User.UserRepository;
+import com.example.demo.borrow.Borrow;
+import com.example.demo.borrow.BorrowRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +26,8 @@ public class BookController {
     private UserRepository userRepository;
     @Autowired
     private CategoryRepository categoryRepository;
+    @Autowired
+    private BorrowRepository borrowRepository;
 
 
     @GetMapping(value="/books")
@@ -75,11 +79,41 @@ public class BookController {
 
     @DeleteMapping(value="/books/{bookId}")
     public ResponseEntity deleteBook(@PathVariable("bookId")  String bookId) {
-        return new ResponseEntity(HttpStatus.NO_CONTENT);
+
+        Optional<Book> bookToDelete = bookRepository.findById(Integer.valueOf(bookId));
+
+            if (!bookToDelete.isPresent()){
+                return new ResponseEntity("book not found", HttpStatus.BAD_REQUEST);
+            }
+
+            Book book = bookToDelete.get();
+            List<Borrow> borrows = borrowRepository.findByBookId(book.getId());
+
+                for (Borrow borrow:borrows){
+                    if (borrow.getClosDate()==null){
+                        User  borrower = borrow.getBorrower();
+                        return new ResponseEntity(borrower,HttpStatus.CONFLICT);
+                    }
+                }
+                book.setDeleted(true);
+                bookRepository.save(book);
+                return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
     @PutMapping (value="/books/{bookId}")
     public ResponseEntity updateBook(@PathVariable("bookId")String bookId, @RequestParam @Valid Book book) {
-        return new ResponseEntity(HttpStatus.OK);
+
+        Optional<Book> bookToUpdate = bookRepository.findById(Integer.valueOf(bookId));
+        if (!bookToUpdate.isPresent()){
+            return new ResponseEntity("book not exist", HttpStatus.BAD_REQUEST);
+        }
+
+        Book bookToSave = bookToUpdate.get();
+        Optional<Category> newCategory = categoryRepository.findById(book.getCategoryId());
+        bookToSave.setCategory(newCategory.get());
+        bookToSave.setTitle(book.getTitle());
+        bookRepository.save(bookToSave);
+
+        return new ResponseEntity(bookToSave, HttpStatus.OK);
     }
     @GetMapping("/categories")
     public ResponseEntity listCategory(){
