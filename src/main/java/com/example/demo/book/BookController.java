@@ -21,11 +21,12 @@ import java.util.Optional;
 public class BookController {
 
     @Autowired
+    private CategoryRepository categoryRepository;
+    @Autowired
     private BookRepository bookRepository;
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private CategoryRepository categoryRepository;
+
     @Autowired
     private BorrowRepository borrowRepository;
 
@@ -126,6 +127,13 @@ public class BookController {
             }
             return new ResponseEntity(book.get(), HttpStatus.OK);
         }
+
+
+    @GetMapping("/categories")
+    public ResponseEntity listCategories(){
+        return new ResponseEntity(categoryRepository.findAll(), HttpStatus.OK);
+
+    }
 
 
 }
