@@ -34,21 +34,17 @@ public class BookController {
         public ResponseEntity listBooks(@RequestParam(required = false)BookStatus status){
 
         Integer userConnectedId = this.getUserConnectedId();
-
             List<Book>books;
         //free books
             if (status != null && status == BookStatus.FREE){
-
                 books = bookRepository.findByStatusAndUserIdNotAndDeletedFalse(status,userConnectedId);
             //My books
             } else{
                 books = bookRepository.findByUserIdAndDeletedFalse(userConnectedId);
             }
-
             return new ResponseEntity(books, HttpStatus.OK);
         }
-
-        private Integer getUserConnectedId(){
+    public static Integer getUserConnectedId(){
         return 1;
         }
 
@@ -121,5 +117,15 @@ public class BookController {
         Category categoryRoman = new Category("Roman");
         return new ResponseEntity(Arrays.asList(category,categoryRoman),HttpStatus.OK);
     }
+    @GetMapping("/books/{bookId}")
+        public ResponseEntity loadBook(@PathVariable("bookId") String bookId){
+            Optional<Book> book = bookRepository.findById(Integer.valueOf(bookId));
+
+            if (!book.isPresent()){
+                return new ResponseEntity("book not found", HttpStatus.BAD_REQUEST);
+            }
+            return new ResponseEntity(book.get(), HttpStatus.OK);
+        }
+
 
 }
